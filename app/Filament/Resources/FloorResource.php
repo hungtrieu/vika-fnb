@@ -17,7 +17,9 @@ class FloorResource extends Resource
 {
     protected static ?string $model = Floor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
+    protected static ?int $navigationSort = 12;
 
     public static function form(Form $form): Form
     {
@@ -63,7 +65,7 @@ class FloorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\CulinaryTablesRelationManager::class,
         ];
     }
     

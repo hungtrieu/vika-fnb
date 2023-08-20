@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('attendance_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id');
+            $table->foreignId('user_id');
             $table->foreignId('schedule_id');
             $table->time('log_time');
             $table->tinyInteger('log_type');

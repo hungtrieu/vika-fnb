@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id');
+            $table->foreignId('user_id');
             $table->dateTime('pay_date');
             $table->float('total_hours', 6, 2, true);
             $table->float('salary', 16, 2, true);

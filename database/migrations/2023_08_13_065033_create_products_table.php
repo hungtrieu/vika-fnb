@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('sku', 20);
             $table->string('name', 255);
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->float('cost', 10, 2, true);
+            $table->float('quantity');
+            $table->string('unit', 20);
             $table->timestamps();
         });
     }

@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('table_id');
-            $table->foreignId('employee_id');
+            $table->string('code', 20)->unique();
+            $table->foreignId('floor_id');
+            $table->foreignId('culinary_table_id');
+            $table->foreignId('user_id');
+            $table->float('amount', 16, 2, true);
             $table->tinyInteger('status');
             $table->timestamps();
         });

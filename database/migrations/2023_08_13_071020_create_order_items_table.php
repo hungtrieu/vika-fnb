@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id');
+            $table->foreignId('menu_id');
             $table->foreignId('menu_item_id');
             $table->smallInteger('quantity', false, true);
+            $table->tinyInteger('status');
             $table->timestamps();
         });
     }
