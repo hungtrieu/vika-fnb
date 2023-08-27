@@ -11,7 +11,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'floor_id', 'culinary_table_id', 'user_id', 'status'];
+    protected $fillable = ['code', 'floor_id', 'culinary_table_id', 'user_id', 'amount', 'status'];
 
     public function items() : HasMany {
         return $this->hasMany(OrderItem::class);

@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Floor;
 
 class FloorSeeder extends Seeder
 {
@@ -29,6 +28,6 @@ class FloorSeeder extends Seeder
         DB::table('culinary_tables')->insert([
             'name' => 'Table 03',
             'floor_id' => $floor_id
-        ]);
+        ]); 
     }
 }

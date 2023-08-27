@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('menu_id');
             $table->foreignId('menu_item_id');
             $table->smallInteger('quantity', false, true);
+            $table->float('price', 10, 2, true);
+            $table->float('amount', 16, 2, true);
             $table->tinyInteger('status');
             $table->timestamps();
         });

@@ -4,14 +4,12 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
  
-enum OrderStatuses: string implements HasLabel
+enum OrderItemStatuses: string implements HasLabel
 {
     case Received = 1;
     case Cooking = 2;
     case Prepared = 3;
     case Served = 4;
-    case Paid = 5;
-    case Completed = 10;
     case Canceled = 99;
     
     public function getLabel(): ?string
@@ -25,8 +23,6 @@ enum OrderStatuses: string implements HasLabel
             self::Cooking => 'Cooking',
             self::Prepared => 'Prepared',
             self::Served => 'Served',
-            self::Paid => 'Paid',
-            self::Completed => 'Completed',
             self::Canceled => 'Canceled',
         };
     }

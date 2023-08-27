@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('floor_id');
             $table->foreignId('culinary_table_id');
             $table->foreignId('user_id');
-            $table->float('amount', 16, 2, true);
+            $table->float('amount', 16, 2, true)->nullable();
             $table->tinyInteger('status');
             $table->timestamps();
         });

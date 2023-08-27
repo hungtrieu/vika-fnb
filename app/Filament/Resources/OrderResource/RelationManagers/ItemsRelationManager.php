@@ -9,7 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use App\Enums\OrderStatuses;
+use App\Enums\OrderItemStatuses;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -40,11 +40,17 @@ class ItemsRelationManager extends RelationManager
                     })
                     ->label('Menu item')
                     ->required(),
-                    Forms\Components\TextInput::make('quantity')
-                        ->required()
-                        ->numeric(),
+                Forms\Components\TextInput::make('quantity')
+                    ->required()
+                    ->numeric()
+                    ->reactive(),
+                Forms\Components\TextInput::make('amount')
+                    ->numeric()
+                    ->inputMode('decimal')
+                    ->prefix('$')
+                    ->disabled(),
                 Forms\Components\Select::make('status')
-                    ->options(OrderStatuses::class)
+                    ->options(OrderItemStatuses::class)
                     ->required(),
             ]);
     }
@@ -61,7 +67,7 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextInputColumn::make('quantity')
                     ->rules(['numeric']),
                 Tables\Columns\SelectColumn::make('status')
-                    ->options(OrderStatuses::class),
+                    ->options(OrderItemStatuses::class),
             ])
             ->filters([
                 //
