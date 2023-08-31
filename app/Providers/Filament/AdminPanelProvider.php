@@ -37,7 +37,9 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
+            ->plugins([
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+            ])
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
