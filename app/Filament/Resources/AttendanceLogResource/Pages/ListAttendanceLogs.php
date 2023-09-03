@@ -13,7 +13,14 @@ class ListAttendanceLogs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->mutateFormDataUsing(function (array $data): array {
+                    $data['user_id'] = auth()->id();
+        
+                    $data['schedule_id'] = 0;
+
+                    return $data;
+                }),
         ];
     }
 }

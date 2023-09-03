@@ -14,7 +14,6 @@ class CreateOrder extends CreateRecord
     {
         $data['user_id'] = auth()->id();
 
-    
         return $data;
     }
     

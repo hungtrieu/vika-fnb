@@ -3,15 +3,17 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AttendanceLogResource\Pages;
-use App\Filament\Resources\AttendanceLogResource\RelationManagers;
 use App\Models\AttendanceLog;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Enums\AttendanceType;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
+use Filament\Tables\Filters\SelectFilter;
 
 class AttendanceLogResource extends Resource
 {
@@ -25,7 +27,21 @@ class AttendanceLogResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Flatpickr::make('log_time')
+                    ->allowInput()
+                    ->enableTime()
+                    ->minuteIncrement(1)
+                    ->minDate(Carbon::today())
+                    ->minTime(Carbon::now('Asia/Ho_Chi_Minh')->format('h:i:s A'))
+                    ->visibleOn('create'),
+                Flatpickr::make('log_time')
+                    ->allowInput()
+                    ->enableTime()
+                    ->minuteIncrement(1)
+                    ->visibleOn('edit'),
+                Forms\Components\Select::make('log_type')
+                    ->options(AttendanceType::class)
+                    ->required(),
             ]);
     }
 
@@ -33,10 +49,14 @@ class AttendanceLogResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('log_time')
+                    ->dateTime(),
+                Tables\Columns\TextColumn::make('log_type'),
             ])
             ->filters([
-                //
+                SelectFilter::make('log_type')
+                    ->options(AttendanceType::class)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -65,5 +85,13 @@ class AttendanceLogResource extends Resource
             // 'create' => Pages\CreateAttendanceLog::route('/create'),
             // 'edit' => Pages\EditAttendanceLog::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        if(auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->whereBelongsTo(auth()->user());
+    }
 }
