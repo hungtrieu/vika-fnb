@@ -10,13 +10,17 @@ use Carbon\Carbon;
 
 class RevenueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Revenue per day';
+    protected static ?string $heading;
 
     protected static ?int $sort = 3;
 
     protected static string $color = 'success';
 
     protected static ?string $pollingInterval = null;
+
+    public function __construct() {
+        self::$heading = __('Revenue per day');
+    }
 
     protected function getData(): array
     {
@@ -53,7 +57,7 @@ class RevenueChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Revenue created',
+                    'label' => __('Revenue created'),
                     'data' => $data,
                 ],
             ],

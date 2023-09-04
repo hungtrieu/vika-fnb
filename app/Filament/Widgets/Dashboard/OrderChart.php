@@ -10,13 +10,17 @@ use Carbon\Carbon;
 
 class OrderChart extends ChartWidget
 {
-    protected static ?string $heading = 'Order per day';
+    protected static ?string $heading;
     
     protected static ?int $sort = 2;
 
     protected static string $color = 'info';
 
     protected static ?string $pollingInterval = null;
+
+    public function __construct() {
+        self::$heading = __('Order per day');
+    }
 
     protected function getData(): array
     {
@@ -53,7 +57,7 @@ class OrderChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Order created',
+                    'label' => __('Order created'),
                     'data' => $data,
                 ],
             ],

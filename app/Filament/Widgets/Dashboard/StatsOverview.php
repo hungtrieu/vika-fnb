@@ -15,13 +15,16 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
+        // $numberFormatter = new \NumberFormatter(app()->getLocale(), \NumberFormatter::CURRENCY);
+        // $currency_symbol =  $numberFormatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
+        $currency_symbol = '$';
 
         $order_stats = $this->getOrderStats();
 
         return [
-            Stat::make('Total orders', $order_stats['total_orders']),
-            Stat::make('Revenue', '$' . $order_stats['total_revenue']),
-            Stat::make('Average spending', '$' . $order_stats['average_spending']),
+            Stat::make(__('Total orders'), $order_stats['total_orders']),
+            Stat::make(__('Revenue'), $currency_symbol . $order_stats['total_revenue']),
+            Stat::make(__('Average spending'),  $currency_symbol . $order_stats['average_spending']),
         ];
     }
 
