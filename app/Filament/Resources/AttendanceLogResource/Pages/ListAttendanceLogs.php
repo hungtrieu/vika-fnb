@@ -15,7 +15,11 @@ class ListAttendanceLogs extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->mutateFormDataUsing(function (array $data): array {
-                    $data['user_id'] = auth()->id();
+                    $user = auth()->user();
+
+                    $data['user_id'] = $user->id;
+
+                    $data['store_id'] = $user->store_id;
         
                     $data['schedule_id'] = 0;
 

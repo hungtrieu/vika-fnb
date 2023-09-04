@@ -50,6 +50,8 @@ class AttendanceLogResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->visible(auth()->user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('log_time')
                     ->dateTime('d-m-Y H:i:s'),
                 Tables\Columns\TextColumn::make('log_type'),
@@ -91,6 +93,10 @@ class AttendanceLogResource extends Resource
     {
         if(auth()->user()->hasRole('super_admin')) {
             return parent::getEloquentQuery();
+        }
+
+        if(auth()->user()->hasRole('manager')) {
+            return parent::getEloquentQuery()->where('store_id', auth()->user()->store_id);
         }
         return parent::getEloquentQuery()->whereBelongsTo(auth()->user());
     }

@@ -13,7 +13,13 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->mutateFormDataUsing(function (array $data): array {
+                    
+                    $data['store_id'] = auth()->user()->store_id;
+                    
+                    return $data;
+                }),
         ];
     }
 }

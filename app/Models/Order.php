@@ -11,7 +11,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'floor_id', 'culinary_table_id', 'user_id', 'amount', 'status'];
+    protected $fillable = ['code', 'store_id', 'floor_id', 'culinary_table_id', 'user_id', 'amount', 'status'];
 
     public function items() : HasMany {
         return $this->hasMany(OrderItem::class);
@@ -27,6 +27,10 @@ class Order extends Model
 
     public function user() : BelongsTo {
         return $this->belongsTo(User::class);
+    }
+
+    public function store() : BelongsTo {
+        return $this->belongsTo(Store::class);
     }
 
     public static function generateCode() : string {

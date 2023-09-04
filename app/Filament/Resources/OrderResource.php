@@ -9,6 +9,7 @@ use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\CulinaryTable;
 use App\Models\Floor;
 use App\Models\Order;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -34,14 +35,20 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
             ->columns(1)
             ->schema([
                 Section::make('Information')
-                    ->columns(5)
+                    ->columns(3)
                     ->schema([
+                        Forms\Components\Select::make('store_id')
+                            ->options(Store::all()->pluck('name', 'id')->toArray())
+                            ->label('Store')
+                            ->visible(auth()->user()->hasRole('super_admin')),
                         Forms\Components\TextInput::make('code')
                             ->required()
                             ->maxLength(20)
@@ -69,13 +76,12 @@ class OrderResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('status')
                             ->options(OrderStatuses::class)
-                            ->required(),
-                        Forms\Components\TextInput::make("amount")
-                            ->readOnly(),
-                            // ->default(0)
-                            // ->placeholder(function (Get $get, Set $set) {
-                            //     return self::calculateOrderAmount($get, $set);
-                            // }),
+                            ->required()
+                            ->default(OrderStatuses::Received),
+                        Forms\Components\Placeholder::make('total')
+                            ->content(function (Get $get): string {
+                                return '$' . self::calculateOrderAmount($get);
+                            }),
                         Forms\Components\Hidden::make('user_id'),
                     ]),
                 Section::make()
@@ -144,14 +150,16 @@ class OrderResource extends Resource
                                     ->default(0),
                                 Forms\Components\Select::make('status')
                                     ->options(OrderItemStatuses::class)
-                                    ->required(),
+                                    ->required()
+                                    ->default(OrderItemStatuses::Received),
                             ])
                     ])
             ]);
     }
 
-    protected static function calculateOrderAmount(Get $get, Set $set) : string {
+    protected static function calculateOrderAmount(Get $get) : string {
         $items = $get('items');
+
 
         $order_amount = 0;
 
@@ -166,6 +174,8 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('store.name')
+                    ->visible(auth()->user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('code'),
                 Tables\Columns\TextColumn::make('floor.name')
                     ->label('Floor'),
@@ -211,5 +221,13 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        if(auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->where('store_id', auth()->user()->store_id);
     }
 }

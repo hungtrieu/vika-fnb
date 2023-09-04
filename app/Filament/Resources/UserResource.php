@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\CreateRecord;
@@ -34,7 +35,6 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name'),
                 Forms\Components\TextInput::make('password')
                     ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord)
                     ->minLength(8)
@@ -47,7 +47,12 @@ class UserResource extends Resource
                     ->password()
                     ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord)
                     ->minLength(8)
-                    ->dehydrated(false)
+                    ->dehydrated(false),
+                Forms\Components\Select::make('store_id')
+                    ->options(Store::all()->pluck('name', 'id')->toArray())
+                    ->label('Store')
+                    ->visible(auth()->user()->hasRole('super_admin')),
+                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name'),
             ]);
     }
 
@@ -55,8 +60,12 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->visible(auth()->user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('roles.name'),
                 Tables\Columns\TextColumn::make('created_at'),
             ])
@@ -90,5 +99,13 @@ class UserResource extends Resource
             // 'create' => Pages\CreateUser::route('/create'),
             // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        if(auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->where('store_id', auth()->user()->store_id);
+    }
 }

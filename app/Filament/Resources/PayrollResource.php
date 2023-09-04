@@ -33,7 +33,7 @@ class PayrollResource extends Resource
                 Forms\Components\Select::make('user_id')
                     ->label('User')
                     ->required()
-                    ->options(User::all()->pluck('name', 'id')->toArray()),
+                    ->options(User::where('store_id', auth()->user()->store_id)->get()->pluck('name', 'id')->toArray()),
                 Flatpickr::make('pay_date')
                     ->allowInput()
                     ->maxDate(Carbon::today())
@@ -44,16 +44,12 @@ class PayrollResource extends Resource
                     ->prefix('$')
                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
                         $set('net_salary', $state - $get('deductions'));
-
-                        // self::calculateOrderAmount($get, $set);
                     }),
                 Forms\Components\TextInput::make('deductions')
                     ->prefix('$')
                     ->live()
                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
                         $set('net_salary', $get('salary') - $state);
-
-                        // self::calculateOrderAmount($get, $set);
                     }),
                 Forms\Components\TextInput::make("net_salary")
                     ->prefix('$'),
@@ -65,6 +61,8 @@ class PayrollResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->searchable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->visible(auth()->user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('pay_date')->datetime('d-m-Y'),
                 Tables\Columns\TextColumn::make('salary'),
                 Tables\Columns\TextColumn::make('deductions'),
@@ -94,15 +92,12 @@ class PayrollResource extends Resource
         ];
     }
 
-    protected static function calculateNetSalary(Get $get, Set $set) : string {
-        // $items = $get('items');
-
-        // $order_amount = 0;
-
-        // foreach ($items as $item) {
-        //     $order_amount += $item['amount'];
-        // }
-
-        return 110;
+    public static function getEloquentQuery(): Builder
+    {
+        if(auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->where('store_id', auth()->user()->store_id);
     }
+
 }

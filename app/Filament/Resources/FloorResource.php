@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\FloorResource\Pages;
 use App\Filament\Resources\FloorResource\RelationManagers;
 use App\Models\Floor;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,7 +18,7 @@ class FloorResource extends Resource
 {
     protected static ?string $model = Floor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?int $navigationSort = 12;
 
@@ -28,6 +29,10 @@ class FloorResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(50),
+                Forms\Components\Select::make('store_id')
+                    ->options(Store::all()->pluck('name', 'id')->toArray())
+                    ->label('Store')
+                    ->visible(auth()->user()->hasRole('super_admin')),
             ]);
     }
 
@@ -37,6 +42,8 @@ class FloorResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('store.name')
+                    ->visible(auth()->user()->hasRole('super_admin')),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -76,5 +83,13 @@ class FloorResource extends Resource
             'create' => Pages\CreateFloor::route('/create'),
             'edit' => Pages\EditFloor::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        if(auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        return parent::getEloquentQuery()->where('store_id', auth()->user()->store_id);
+    }
 }

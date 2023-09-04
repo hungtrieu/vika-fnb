@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
  
-enum OrderItemStatuses: string implements HasLabel
+enum OrderItemStatuses: int implements HasLabel
 {
     case Received = 1;
     case Cooking = 2;

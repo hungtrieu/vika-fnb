@@ -17,6 +17,8 @@ class ManagePayrolls extends ManageRecords
             Actions\CreateAction::make()
                 ->mutateFormDataUsing(function (array $data): array {
         
+                    $data['store_id'] = auth()->user()->store_id;
+
                     $data['total_hours'] = 0; // for simple logic, will update later
 
                     return $data;
