@@ -23,7 +23,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-use Haruncpi\LaravelIdGenerator\IdGenerator;
 use App\Enums\OrderStatuses;
 use App\Enums\OrderItemStatuses;
 use Filament\Forms\Components\Fieldset;
