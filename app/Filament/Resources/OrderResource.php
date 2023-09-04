@@ -70,18 +70,20 @@ class OrderResource extends Resource
                         Forms\Components\Select::make('status')
                             ->options(OrderStatuses::class)
                             ->required(),
-                        Forms\Components\TextInput::make("order_amount")
-                            ->disabled()
-                            ->placeholder(function (Get $get, Set $set) {
-                                return self::calculateOrderAmount($get, $set);
-                            }),
+                        Forms\Components\TextInput::make("amount")
+                            ->readOnly(),
+                            // ->default(0)
+                            // ->placeholder(function (Get $get, Set $set) {
+                            //     return self::calculateOrderAmount($get, $set);
+                            // }),
                         Forms\Components\Hidden::make('user_id'),
                     ]),
                 Section::make()
+                    ->visibleOn('edit')
                     ->schema([
                         Repeater::make('items')
                             ->relationship()
-                            ->columns(5)
+                            ->columns(6)
                             ->addActionLabel('Add order item')
                             ->visibleOn('edit')
                             ->schema([
@@ -129,7 +131,9 @@ class OrderResource extends Resource
                                         // self::calculateOrderAmount($get, $set);
                                     })
                                     ->default(0)
-                                    ->numeric(),
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(100),
                                 Forms\Components\TextInput::make('price')
                                     ->prefix('$')
                                     ->readOnly()
@@ -137,11 +141,12 @@ class OrderResource extends Resource
                                 Forms\Components\TextInput::make('amount')
                                     ->prefix('$')
                                     ->readOnly()
-                                    ->default(0)
+                                    ->default(0),
+                                Forms\Components\Select::make('status')
+                                    ->options(OrderItemStatuses::class)
+                                    ->required(),
                             ])
-                        
                     ])
-                
             ]);
     }
 
@@ -206,5 +211,5 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
-    }    
+    }
 }

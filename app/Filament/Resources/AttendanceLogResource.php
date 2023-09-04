@@ -21,7 +21,7 @@ class AttendanceLogResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 199;
 
     public static function form(Form $form): Form
     {
@@ -51,7 +51,7 @@ class AttendanceLogResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('log_time')
-                    ->dateTime(),
+                    ->dateTime('d-m-Y H:i:s'),
                 Tables\Columns\TextColumn::make('log_type'),
             ])
             ->filters([
