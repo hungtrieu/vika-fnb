@@ -83,7 +83,10 @@ return [
     |
     */
 
-    'locale' => 'vi_VN',
+    'locale' => 'vi',
+
+    'currency_unit' => 'đ',
+    'currency_position' => 1,
 
     /*
     |--------------------------------------------------------------------------
@@ -169,6 +172,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+        
     ])->toArray(),
 
     /*
@@ -184,6 +188,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'VikaHelper' => App\Helpers\VikaHelper::class
     ])->toArray(),
 
+    
 ];

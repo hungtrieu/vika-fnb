@@ -6,6 +6,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Order;
 use App\Enums\OrderStatuses;
+use App\Helpers\VikaHelper;
 
 class StatsOverview extends BaseWidget
 {
@@ -15,16 +16,14 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        // $numberFormatter = new \NumberFormatter(app()->getLocale(), \NumberFormatter::CURRENCY);
-        // $currency_symbol =  $numberFormatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
-        $currency_symbol = '$';
+        $currency_symbol = config('app.currency_unit');
 
         $order_stats = $this->getOrderStats();
 
         return [
             Stat::make(__('Total orders'), $order_stats['total_orders']),
-            Stat::make(__('Revenue'), $currency_symbol . $order_stats['total_revenue']),
-            Stat::make(__('Average spending'),  $currency_symbol . $order_stats['average_spending']),
+            Stat::make(__('Revenue'), VikaHelper::convertCurrency($order_stats['total_revenue'])),
+            Stat::make(__('Average spending'),  VikaHelper::convertCurrency($order_stats['average_spending'])),
         ];
     }
 
