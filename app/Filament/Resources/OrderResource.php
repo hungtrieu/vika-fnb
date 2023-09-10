@@ -36,26 +36,36 @@ class OrderResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Order');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Order');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->columns(1)
             ->schema([
-                Section::make('Information')
+                Section::make(__('Information'))
                     ->columns(3)
                     ->schema([
                         Forms\Components\Select::make('store_id')
                             ->options(Store::all()->pluck('name', 'id')->toArray())
-                            ->label('Store')
+                            ->label(__('Store'))
                             ->visible(auth()->user()->hasRole('super_admin')),
-                        Forms\Components\TextInput::make('code')
+                        Forms\Components\TextInput::make('code')->label(__('Code'))
                             ->required()
                             ->maxLength(20)
                             ->default(Order::generateCode()),
 
                         Forms\Components\Select::make('floor_id')
                             ->options(Floor::all()->pluck('name', 'id')->toArray())
-                            ->label('Floor')
+                            ->label(__('Floor'))
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(fn (callable $set) => $set('culinary_table_id', null)),
@@ -71,15 +81,15 @@ class OrderResource extends Resource
                                 return $floor->culinary_tables->pluck('name', 'id');
                                 
                             })
-                            ->label('Table')
+                            ->label(__('Table'))
                             ->required(),
-                        Forms\Components\Select::make('status')
+                        Forms\Components\Select::make('status')->label(__('Status'))
                             ->options(OrderStatuses::class)
                             ->required()
                             ->default(OrderStatuses::Received),
-                        Forms\Components\Placeholder::make('total')
+                        Forms\Components\Placeholder::make('total')->label(__('Total'))
                             ->content(function (Get $get): string {
-                                return '$' . self::calculateOrderAmount($get);
+                                return config('app.currency_unit') . self::calculateOrderAmount($get);
                             }),
                         Forms\Components\Hidden::make('user_id'),
                     ]),
@@ -89,12 +99,12 @@ class OrderResource extends Resource
                         Repeater::make('items')
                             ->relationship()
                             ->columns(6)
-                            ->addActionLabel('Add order item')
+                            ->addActionLabel(__('Add order item'))
                             ->visibleOn('edit')
                             ->schema([
                                 Forms\Components\Select::make('menu_id')
                                     ->options(Menu::all()->pluck('name', 'id')->toArray())
-                                    ->label('Menu')
+                                    ->label(__('Menu'))
                                     ->required()
                                     ->reactive()
                                     ->afterStateUpdated(fn (callable $set) => $set('menu_item_id', null)),
@@ -109,7 +119,7 @@ class OrderResource extends Resource
 
                                         return $menu->items->pluck('name', 'id');
                                     })
-                                    ->label('Menu item')
+                                    ->label(__('Menu item'))
                                     ->reactive()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         $item = MenuItem::find($get('menu_item_id'));
@@ -127,7 +137,7 @@ class OrderResource extends Resource
                                         // self::calculateOrderAmount($get, $set);
                                     })
                                     ->required(),
-                                Forms\Components\TextInput::make('quantity')
+                                Forms\Components\TextInput::make('quantity')->label(__('Quantity'))
                                     ->required()
                                     ->reactive()
                                     ->afterStateUpdated(function (Get $get, Set $set) {
@@ -139,15 +149,15 @@ class OrderResource extends Resource
                                     ->numeric()
                                     ->minValue(1)
                                     ->maxValue(100),
-                                Forms\Components\TextInput::make('price')
-                                    ->prefix('$')
+                                Forms\Components\TextInput::make('price')->label(__('Price'))
+                                    ->prefix(config('app.currency_unit'))
                                     ->readOnly()
                                     ->default(0),
-                                Forms\Components\TextInput::make('amount')
-                                    ->prefix('$')
+                                Forms\Components\TextInput::make('amount')->label(__('Amount'))
+                                    ->prefix(config('app.currency_unit'))
                                     ->readOnly()
                                     ->default(0),
-                                Forms\Components\Select::make('status')
+                                Forms\Components\Select::make('status')->label(__('Status'))
                                     ->options(OrderItemStatuses::class)
                                     ->required()
                                     ->default(OrderItemStatuses::Received),
@@ -173,19 +183,19 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\TextColumn::make('code'),
+                Tables\Columns\TextColumn::make('code')->label(__('Code')),
                 Tables\Columns\TextColumn::make('floor.name')
-                    ->label('Floor'),
+                    ->label(__('Floor')),
                 Tables\Columns\TextColumn::make('culinary_table.name')
-                    ->label('Table'),
+                    ->label(__('Table')),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('User'),
-                Tables\Columns\SelectColumn::make('status')
+                    ->label(__('User')),
+                Tables\Columns\SelectColumn::make('status')->label(__('Status'))
                     ->options(OrderStatuses::class),
-                Tables\Columns\TextColumn::make('amount'),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('amount')->label(__('Amount')),
+                Tables\Columns\TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -22,15 +22,26 @@ class StoreResource extends Resource
     
     protected static ?int $navigationSort = 1;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Store');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Store');
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('Name'))
                     ->required(),
-                Forms\Components\TextInput::make('address'),
-                Forms\Components\TextInput::make('phone'),
-                Forms\Components\Toggle::make('status')
+                Forms\Components\TextInput::make('address')->label(__('Address')),
+                Forms\Components\TextInput::make('phone')->label(__('Phone')),
+                Forms\Components\Toggle::make('status')->label(__('Status'))
                     ->default('checked')
                 
             ]);
@@ -40,10 +51,10 @@ class StoreResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('address'),
-                Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\ToggleColumn::make('status')
+                Tables\Columns\TextColumn::make('name')->label(__('Name')),
+                Tables\Columns\TextColumn::make('address')->label(__('Address')),
+                Tables\Columns\TextColumn::make('phone')->label(__('Phone')),
+                Tables\Columns\ToggleColumn::make('status')->label(__('Status'))
             ])
             ->filters([
                 //

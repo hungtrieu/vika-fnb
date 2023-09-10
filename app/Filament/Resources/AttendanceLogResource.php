@@ -23,23 +23,33 @@ class AttendanceLogResource extends Resource
 
     protected static ?int $navigationSort = 199;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Attendance Log');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Attendance Log');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Flatpickr::make('log_time')
+                Flatpickr::make('log_time')->label(__('Log time'))
                     ->allowInput()
                     ->enableTime()
                     ->minuteIncrement(1)
                     ->minDate(Carbon::today())
                     ->minTime(Carbon::now('Asia/Ho_Chi_Minh')->format('h:i:s A'))
                     ->visibleOn('create'),
-                Flatpickr::make('log_time')
+                Flatpickr::make('log_time')->label(__('Log time'))
                     ->allowInput()
                     ->enableTime()
                     ->minuteIncrement(1)
                     ->visibleOn('edit'),
-                Forms\Components\Select::make('log_type')
+                Forms\Components\Select::make('log_type')->label(__('Log type'))
                     ->options(AttendanceType::class)
                     ->required(),
             ]);
@@ -49,15 +59,15 @@ class AttendanceLogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('user.name')->label(__('Name'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\TextColumn::make('log_time')
+                Tables\Columns\TextColumn::make('log_time')->label(__('Log time'))
                     ->dateTime('d-m-Y H:i:s'),
-                Tables\Columns\TextColumn::make('log_type'),
+                Tables\Columns\TextColumn::make('log_type')->label(__('Log type')),
             ])
             ->filters([
-                SelectFilter::make('log_type')
+                SelectFilter::make('log_type')->label(__('Log type'))
                     ->options(AttendanceType::class)
             ])
             ->actions([

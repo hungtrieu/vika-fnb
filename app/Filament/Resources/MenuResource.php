@@ -22,18 +22,28 @@ class MenuResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Menu');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Menu');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('name')->label(__('Name'))
                     ->required()
                     ->maxLength(100),
                 Forms\Components\Select::make('store_id')
                     ->options(Store::all()->pluck('name', 'id')->toArray())
-                    ->label('Store')
+                    ->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Forms\Components\Toggle::make('status')
+                Forms\Components\Toggle::make('status')->label(__('Status'))
                     ->required()
                     ->default('checked'),
             ]);
@@ -43,17 +53,17 @@ class MenuResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\IconColumn::make('status')
+                Tables\Columns\IconColumn::make('status')->label(__('Status'))
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

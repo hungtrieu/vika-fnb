@@ -2,6 +2,12 @@
 
 return [
 
+    'column_toggle' => [
+
+        'heading' => 'Cột',
+
+    ],
+
     'columns' => [
 
         'text' => [
@@ -108,6 +114,8 @@ return [
             ],
 
         ],
+
+        'heading' => 'Bộ lọc',
 
         'indicator' => 'Bộ lọc đang kích hoạt',
 

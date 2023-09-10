@@ -25,17 +25,27 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 99;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('User');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('User');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('name')->label(__('Name'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('password')
+                Forms\Components\TextInput::make('password')->label(__('Password'))
                     ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord)
                     ->minLength(8)
                     ->password()
@@ -43,16 +53,17 @@ class UserResource extends Resource
                     ->dehydrated(fn ($state) => filled($state))
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
                 Forms\Components\TextInput::make('passwordConfirmation')
-                    ->label('Password Confirmation')
+                    ->label(__('Password Confirmation'))
                     ->password()
                     ->required(fn(Page $livewire): bool => $livewire instanceof CreateRecord)
                     ->minLength(8)
                     ->dehydrated(false),
                 Forms\Components\Select::make('store_id')
                     ->options(Store::all()->pluck('name', 'id')->toArray())
-                    ->label('Store')
+                    ->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Forms\Components\Select::make('roles')->multiple()->relationship('roles', 'name'),
+                Forms\Components\Select::make('roles')->label(__('Role'))
+                    ->multiple()->relationship('roles', 'name'),
             ]);
     }
 
@@ -60,14 +71,14 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label(__('Name'))
                     ->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\TextColumn::make('roles.name'),
-                Tables\Columns\TextColumn::make('created_at'),
+                Tables\Columns\TextColumn::make('roles.name')->label(__('Role')),
+                Tables\Columns\TextColumn::make('created_at')->label(__('Created at')),
             ])
             ->filters([
                 //

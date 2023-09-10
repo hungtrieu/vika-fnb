@@ -16,8 +16,8 @@ enum AttendanceType: int implements HasLabel
         // or
     
         return match ($this) {
-            self::CheckIn => 'Check-in',
-            self::CheckOut => 'Check-out',
+            self::CheckIn => __('Check-in'),
+            self::CheckOut => __('Check-out'),
         };
     }
 }

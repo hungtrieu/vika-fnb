@@ -26,33 +26,43 @@ class PayrollResource extends Resource
 
     protected static ?int $navigationSort = 200;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Payroll');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Payroll');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('User')
+                    ->label(__('Name'))
                     ->required()
                     ->options(User::where('store_id', auth()->user()->store_id)->get()->pluck('name', 'id')->toArray()),
-                Flatpickr::make('pay_date')
+                Flatpickr::make('pay_date')->label(__('Pay Date'))
                     ->allowInput()
                     ->maxDate(Carbon::today())
                     ->required(),
-                Forms\Components\TextInput::make('salary')
+                Forms\Components\TextInput::make('salary')->label(__('Salary'))
                     ->required()
                     ->live()
-                    ->prefix('$')
+                    ->prefix(config('app.currency_unit'))
                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
                         $set('net_salary', $state - $get('deductions'));
                     }),
-                Forms\Components\TextInput::make('deductions')
-                    ->prefix('$')
+                Forms\Components\TextInput::make('deductions')->label(__('Deductions'))
+                    ->prefix(config('app.currency_unit'))
                     ->live()
                     ->afterStateUpdated(function ($state, Get $get, Set $set) {
                         $set('net_salary', $get('salary') - $state);
                     }),
-                Forms\Components\TextInput::make("net_salary")
-                    ->prefix('$'),
+                Forms\Components\TextInput::make("net_salary")->label(__('Net Salary'))
+                    ->prefix(config('app.currency_unit')),
             ]);
     }
 
@@ -60,13 +70,13 @@ class PayrollResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->searchable(),
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('user.name')->label(__('Name'))->searchable(),
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\TextColumn::make('pay_date')->datetime('d-m-Y'),
-                Tables\Columns\TextColumn::make('salary'),
-                Tables\Columns\TextColumn::make('deductions'),
-                Tables\Columns\TextColumn::make('net_salary'),
+                Tables\Columns\TextColumn::make('pay_date')->label(__('Pay Date'))->datetime('d-m-Y'),
+                Tables\Columns\TextColumn::make('salary')->label(__('Salary')),
+                Tables\Columns\TextColumn::make('deductions')->label(__('Deductions')),
+                Tables\Columns\TextColumn::make('net_salary')->label(__('Net Salary')),
             ])
             ->filters([
                 //

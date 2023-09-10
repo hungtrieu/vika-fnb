@@ -22,16 +22,26 @@ class FloorResource extends Resource
 
     protected static ?int $navigationSort = 12;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Floor');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Floor');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('name')->label(__('Name'))
                     ->required()
                     ->maxLength(50),
                 Forms\Components\Select::make('store_id')
                     ->options(Store::all()->pluck('name', 'id')->toArray())
-                    ->label('Store')
+                    ->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
             ]);
     }
@@ -40,15 +50,15 @@ class FloorResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('store.name')
+                Tables\Columns\TextColumn::make('store.name')->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
