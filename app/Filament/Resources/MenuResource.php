@@ -41,6 +41,7 @@ class MenuResource extends Resource
                     ->maxLength(100),
                 Forms\Components\Select::make('store_id')
                     ->options(Store::all()->pluck('name', 'id')->toArray())
+                    ->required()
                     ->label(__('Store'))
                     ->visible(auth()->user()->hasRole('super_admin')),
                 Forms\Components\Toggle::make('status')->label(__('Status'))

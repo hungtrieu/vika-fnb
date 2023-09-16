@@ -56,7 +56,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             // ->sidebarFullyCollapsibleOnDesktop()
-            ->topNavigation()
+            // ->topNavigation()
             ->darkMode(false)
             ->renderHook(
                 'panels::head.end',
