@@ -47,4 +47,4 @@ Because vika-fnb has relationship: User belong to a Store, so you may receive cr
 
     public function team() : BelongsTo {
         return $this->belongsTo(Team::class);
-    }
+    }h

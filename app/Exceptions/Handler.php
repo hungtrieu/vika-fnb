@@ -35,6 +35,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest(route('filament.admin.auth.login'));
+        return redirect()->guest(route('filament.app.auth.login'));
     }
 }
