@@ -13,6 +13,12 @@ Http/Middleware/Authenticate.php
 
 For example, if you want to change route from 'admin' to 'app', you need to update route to 'filament.app.auth.login'
 
+# If you have cors error when deploy to production 
+
+Change the 'app/Http/Middleware/TrustProxies.php'
+
+    protected $proxies = '*';
+
 # Add super admin user
 
 Because vika-fnb has relationship: User belong to a Store, so you may receive crash code when trying to create fillament user. To prevent that, you need to do like below:
